@@ -7,7 +7,7 @@ var pickedItemId = ""
 var itemName = ""
 var quantityPurchased = ""
 var inStock = 0
-var itemPrice =0
+var itemPrice = 0
 var customerCost = 0
 
 var connection = mysql.createConnection({
@@ -20,7 +20,7 @@ var connection = mysql.createConnection({
 
 connection.connect(function (err) {
     if (err) throw err
-    console.log("connection succesful");
+    //console.log("connection succesful");
     dataDisplay()
 });
 
@@ -59,7 +59,7 @@ checkInventory = function () {
     connection.query("SELECT stock_quantity, product_name FROM products WHERE?",
         {
             item_id: pickedItemId
-        }, 
+        },
         function (err, stock) {
             console.log(stock[0].stock_quantity)
             inStock = stock[0].stock_quantity
@@ -75,6 +75,26 @@ checkInventory = function () {
             }
             else {
                 console.log("Not enough in stock to fill order!") //boot back to datadisplay?
+                inquire.prompt([
+                    {
+                        type: "confirm",
+                        message: "Would you like to try again? ",
+                        name: "tryAgain",
+                        default: false
+                    }
+
+                ])
+                    .then(function (response) {
+                        switch (response.tryAgain) {
+                            case true:
+                                dataDisplay()
+                                break
+                            case false:
+                            console.log("Come back soon!")
+                                connection.end()
+                        }
+
+                    })
             }
         })
 }
@@ -99,17 +119,17 @@ updateInventory = function () {
 
 }
 
-calculateCost =function (){
+calculateCost = function () {
     connection.query("SELECT price FROM products WHERE?",
-    {
-        item_id: pickedItemId
-    }, 
-    function(err, priceData){
-        itemPrice = priceData[0].price
-        customerCost = itemPrice*quantityPurchased        
-        console.log("\n__________________________________________\nYou bought " + quantityPurchased+" "+ itemName+"(s) "+
-        " at "+itemPrice+ " a piece. \nYour total cost for this purchase is: $"+customerCost)
-
-    })
+        {
+            item_id: pickedItemId
+        },
+        function (err, priceData) {
+            itemPrice = priceData[0].price
+            customerCost = itemPrice * quantityPurchased
+            console.log("\n__________________________________________\nYou bought " + quantityPurchased + " " + itemName + "(s) " +
+                " at " + itemPrice + " a piece. \nYour total cost for this purchase is: $" + customerCost)
+            connection.end()
+        })
 
 }
