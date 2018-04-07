@@ -136,7 +136,6 @@ adjustInventory = function () {
             item_id: updatedItemId
         },
         function (err, stock) {
-            console.log(stock[0].stock_quantity)
             inStock = stock[0].stock_quantity
             itemName = stock[0].product_name
 
@@ -144,7 +143,6 @@ adjustInventory = function () {
 
             else {
                 inStock += quantityAdded
-                console.log(inStock)
                 updateInventory()
             }
 

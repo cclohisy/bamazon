@@ -38,6 +38,7 @@ displayPrompt = function () {
                 case "View Product Sales by Department":
                     break
                 case "Create New Department":
+                createDepartment()
                     break
 
             }
@@ -63,4 +64,34 @@ anythingElse = function () {
             }
 
         })
+}
+
+// INSERT INTO departments (department_name, over_head_costs)
+createDepartment = function(){
+    inquire.prompt(
+        [ 
+         {
+             name: "departmentName",
+             type: "input",
+             message: "Department: "
+         },
+         {
+             name: "overheadCost",
+             type: "input",
+             message: "Overhead Cost: "
+         }]
+     )
+         .then(function (newDepartmentData) {
+             console.log("\nAdding new department!");
+             console.log(newDepartmentData)
+             connection.query("INSERT INTO departments SET ?",
+                 {
+                     department_name: newDepartmentData.departmentName,
+                     over_head_costs: newDepartmentData.overheadCost
+                 }, function (err, res) {
+                     if(err)console.log(err)
+                     console.log("New Department Added!");
+                     anythingElse()
+                 });
+         });
 }
