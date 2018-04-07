@@ -20,7 +20,7 @@ var connection = mysql.createConnection({
 
 connection.connect(function (err) {
     if (err) throw err
-    //console.log("connection succesful");
+    console.log("connection succesful");
     dataDisplay()
 });
 
@@ -61,7 +61,6 @@ checkInventory = function () {
             item_id: pickedItemId
         },
         function (err, stock) {
-            console.log(stock[0].stock_quantity)
             inStock = stock[0].stock_quantity
             itemName = stock[0].product_name
 
@@ -69,7 +68,6 @@ checkInventory = function () {
 
             else if (quantityPurchased <= inStock) {
                 inStock -= quantityPurchased
-                console.log(inStock)
                 updateInventory()
 
             }

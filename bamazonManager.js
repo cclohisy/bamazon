@@ -20,7 +20,7 @@ var connection = mysql.createConnection({
 connection.connect(function (err) {
     if (err) throw err
     //console.log("connection succesful");
-    dataDisplay()
+    displayPrompt()
 });
 
 // List a set of menu options:
@@ -33,7 +33,7 @@ displayPrompt = function () {
         {
             type: "checkbox",
             message: "What would you like to do?",
-            choices: ["View Products for Sale", "View Low Inventory", "Add to Inventory"],
+            choices: ["View Products for Sale", "View Low Inventory", "Add to Inventory", "Add New Product"],
             name: "input",
             default: false,
 
@@ -50,11 +50,13 @@ displayPrompt = function () {
                 case "Add to Inventory":
                     addInventory()
                     break
-
+                case "Add New Product":
+                    addProduct()
+                    break
             }
         })
 }
-displayPrompt()
+
 anythingElse = function () {
     inquire.prompt([
         {
@@ -168,7 +170,45 @@ updateInventory = function () {
         });
 }
 // If a manager selects Add New Product, it should allow the manager to add a completely new product to the store.
-
+//product_name, department_name, price,stock_quantity
+addProduct = function () {
+    inquire.prompt(
+       [ {
+            name: "productName",
+            type: "input",
+            message: "Product Name: "
+        },
+        {
+            name: "departmentName",
+            type: "input",
+            message: "Department: "
+        },
+        {
+            name: "price",
+            type: "input",
+            message: "Price: "
+        },
+        {
+            name: "quantity",
+            type: "input",
+            message: "Quantity: "
+        }]
+    )
+        .then(function (newProductData) {
+            console.log("\nAdding new product!");
+            console.log(newProductData)
+            connection.query("INSERT INTO products SET ?",
+                {
+                    product_name: newProductData.productName,
+                    department_name: newProductData.departmentName,
+                    price:newProductData.price ,
+                    stock_quantity: newProductData.quantity
+                }, function (err, res) {
+                    console.log(res + " info added!\n");
+                    anythingElse()
+                });
+        });
+}
 
 
 
