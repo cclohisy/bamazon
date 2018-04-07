@@ -2,7 +2,6 @@ var mysql = require("mysql")
 var inquire = require("inquirer")
 require("console.table")
 
-//var itemArray = []
 var updatedItemId = ""
 var itemName = ""
 var quantityAdded = ""

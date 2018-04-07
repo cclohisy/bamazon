@@ -2,13 +2,13 @@ var mysql = require("mysql")
 var inquire = require("inquirer")
 require("console.table")
 
-//var itemArray = []
 var pickedItemId = ""
 var itemName = ""
 var quantityPurchased = ""
 var inStock = 0
 var itemPrice = 0
 var customerCost = 0
+var totalSales = 0
 
 var connection = mysql.createConnection({
     host: "localhost",
@@ -56,13 +56,14 @@ dataDisplay = function () {
 }
 
 checkInventory = function () {
-    connection.query("SELECT stock_quantity, product_name FROM products WHERE?",
+    connection.query("SELECT stock_quantity, product_name,product_sales FROM products WHERE?",
         {
             item_id: pickedItemId
         },
-        function (err, stock) {
-            inStock = stock[0].stock_quantity
-            itemName = stock[0].product_name
+        function (err, productData) {
+            inStock = productData[0].stock_quantity
+            itemName = productData[0].product_name
+            totalSales = productData[0].product_sales
 
             if (err) throw err;
 
@@ -88,7 +89,7 @@ checkInventory = function () {
                                 dataDisplay()
                                 break
                             case false:
-                            console.log("Come back soon!")
+                                console.log("Come back soon!")
                                 connection.end()
                         }
 
@@ -113,7 +114,7 @@ updateInventory = function () {
             console.log("Stock Updated!")
             calculateCost()
 
-        });
+        })
 
 }
 
@@ -127,6 +128,25 @@ calculateCost = function () {
             customerCost = itemPrice * quantityPurchased
             console.log("\n__________________________________________\nYou bought " + quantityPurchased + " " + itemName + "(s) " +
                 " at " + itemPrice + " a piece. \nYour total cost for this purchase is: $" + customerCost)
+            updateProductSales()
+        })
+
+}
+
+// bamazonCustomer.js app so that this value is updated with each individual products total revenue from each sale.
+updateProductSales = function () {
+    connection.query(
+        "UPDATE products SET ? WHERE ?",
+        [
+            {
+                product_sales: totalSales + customerCost
+            },
+            {
+                item_id: pickedItemId
+            }
+        ],
+        function (err, result) {
+            console.log("Product Sales Updated!")
             connection.end()
         })
 
