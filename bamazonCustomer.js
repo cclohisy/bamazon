@@ -20,7 +20,7 @@ var connection = mysql.createConnection({
 
 connection.connect(function (err) {
     if (err) throw err
-    console.log("connection succesful");
+    //console.log("connection succesful");
     dataDisplay()
 });
 
@@ -29,6 +29,7 @@ dataDisplay = function () {
         if (err) throw err;
 
         else {
+            console.log("\n")
             console.table(items)
             inquire.prompt([
                 {
@@ -73,7 +74,7 @@ checkInventory = function () {
 
             }
             else {
-                console.log("Not enough in stock to fill order!") //boot back to datadisplay?
+                console.log("\nNot enough in stock to fill order!\n") //boot back to datadisplay?
                 inquire.prompt([
                     {
                         type: "confirm",
@@ -89,7 +90,7 @@ checkInventory = function () {
                                 dataDisplay()
                                 break
                             case false:
-                                console.log("Come back soon!")
+                                console.log("Come back soon!\n")
                                 connection.end()
                         }
 
@@ -99,7 +100,7 @@ checkInventory = function () {
 }
 
 updateInventory = function () {
-    console.log("Updating stock count...\n");
+    //console.log("Updating stock count...\n");
     connection.query(
         "UPDATE products SET ? WHERE ?",
         [
@@ -111,7 +112,7 @@ updateInventory = function () {
             }
         ],
         function (err, updatedStock) {
-            console.log("Stock Updated!")
+            //console.log("Stock Updated!\n")
             calculateCost()
 
         })
@@ -127,8 +128,9 @@ calculateCost = function () {
             itemPrice = priceData[0].price
             customerCost = itemPrice * quantityPurchased
             console.log("\n__________________________________________\nYou bought " + quantityPurchased + " " + itemName + "(s) " +
-                " at " + itemPrice + " a piece. \nYour total cost for this purchase is: $" + customerCost)
+                " at " + itemPrice + " a piece. \nYour total cost for this purchase is: $" + customerCost+"\n__________________________________________\n")
             updateProductSales()
+            anythingElse()
         })
 
 }
@@ -146,8 +148,28 @@ updateProductSales = function () {
             }
         ],
         function (err, result) {
-            console.log("Product Sales Updated!")
-            connection.end()
+
         })
 
+}
+anythingElse = function () {
+    inquire.prompt([
+        {
+            type: "confirm",
+            message: "Would you like to purchase another item? ",
+            name: "nextAction",
+        }
+
+    ])
+        .then(function (response) {
+            switch (response.nextAction) {
+                case true:
+                    dataDisplay()
+                    break
+                case false:
+                    console.log("\nThank you, come again soon!\n")
+                    connection.end()
+            }
+
+        })
 }

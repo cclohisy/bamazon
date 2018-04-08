@@ -2,11 +2,10 @@ var mysql = require("mysql")
 var inquire = require("inquirer")
 require("console.table")
 
-var updatedItemId = ""
-var itemName = ""
-var quantityAdded = ""
-var inStock = 0
-var itemPrice = 0
+var overheadCost = 0
+var totalSales = 0 
+var totalProfit = 0
+var departmentName = ""
 
 var connection = mysql.createConnection({
     host: "localhost",
@@ -36,6 +35,8 @@ displayPrompt = function () {
         .then(function (response) {
             switch (response.input[0]) {
                 case "View Product Sales by Department":
+                //viewSales()
+                getSalesData()
                     break
                 case "Create New Department":
                 createDepartment()
@@ -59,13 +60,39 @@ anythingElse = function () {
                     displayPrompt()
                     break
                 case false:
-                    console.log("Have a great day!")
+                    console.log("\nHave a great day!\n")
                     connection.end()
             }
 
         })
 }
 
+getSalesData = function () {
+    connection.query("SELECT d.department_id, d.department_name, d.over_head_costs, p.product_sales FROM products p "+ 
+    "JOIN departments  d ON p.department_name  = d.department_name GROUP BY department_id",
+    
+    function (err, products) {
+        if (err) throw err;
+
+        else {
+            for(i=0; i< products.length; i++){
+                //product sales = total product sales for products where dept ids are = 
+                    //if statement in loop? 
+                overheadCost = products[i].over_head_costs
+                console.log(products[i].department_name  + " overhead " + overheadCost)
+                totalSales = products[i].product_sales
+                console.log(products[i].department_name  + " total sales for product " +  totalSales)
+
+            }
+            console.log("\n")
+            console.table(products)
+            anythingElse()
+        }
+    })
+}
+calculateProfit = function(){
+
+}
 // INSERT INTO departments (department_name, over_head_costs)
 createDepartment = function(){
     inquire.prompt(
@@ -82,15 +109,16 @@ createDepartment = function(){
          }]
      )
          .then(function (newDepartmentData) {
-             console.log("\nAdding new department!");
-             console.log(newDepartmentData)
+             console.log("\nAdding new department...");
+            //  console.log(newDepartmentData)
+             departmentName = newDepartmentData.departmentName
              connection.query("INSERT INTO departments SET ?",
                  {
                      department_name: newDepartmentData.departmentName,
                      over_head_costs: newDepartmentData.overheadCost
                  }, function (err, res) {
                      if(err)console.log(err)
-                     console.log("New Department Added!");
+                     console.log(departmentName+" department added!\n");
                      anythingElse()
                  });
          });

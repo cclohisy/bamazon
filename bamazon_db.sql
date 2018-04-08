@@ -42,3 +42,15 @@ VALUES ("Electronics", 800000.00),
 ("Grocery", 600000.00);
 
 ALTER TABLE products ADD product_sales;
+
+-- join table attempts...this version does not combine similar departments ids
+SELECT d.department_id, d.department_name, d.over_head_costs, p.product_sales
+FROM bamazon.products p
+JOIN departments  d ON p.department_name  = d.department_name
+
+
+-- woohooo groups by dept id to avoid repetition :)
+SELECT d.department_id, d.department_name, d.over_head_costs, p.product_sales
+FROM bamazon.products p
+JOIN departments  d ON p.department_name  = d.department_name
+GROUP BY department_id

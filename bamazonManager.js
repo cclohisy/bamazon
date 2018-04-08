@@ -71,7 +71,7 @@ anythingElse = function () {
                     displayPrompt()
                     break
                 case false:
-                    console.log("Have a great day!")
+                    console.log("Have a great day!\n")
                     connection.end()
             }
 
@@ -83,6 +83,7 @@ viewProducts = function () {
         if (err) throw err;
 
         else {
+            console.log("\n")
             console.table(items)
             anythingElse()
         }
@@ -95,6 +96,7 @@ viewInventory = function () {
             if (err) throw err;
 
             else {
+                console.log("\n")
                 console.table(lowInventory)
                 anythingElse()
             }
@@ -107,6 +109,7 @@ addInventory = function () {
         if (err) throw err;
 
         else {
+            console.log("\n")
             console.table(items)
             inquire.prompt([
                 {
@@ -116,7 +119,7 @@ addInventory = function () {
                 },
                 {
                     type: "input",
-                    message: "How maany items are you increasing inventory by?",
+                    message: "How many items are you increasing inventory by?",
                     name: "quantityAdded",
 
                 }
@@ -150,7 +153,7 @@ adjustInventory = function () {
 }
 
 updateInventory = function () {
-    console.log("Updating stock count...\n");
+    console.log("\nUpdating stock count...\n");
     connection.query(
         "UPDATE products SET ? WHERE ?",
         [
@@ -192,16 +195,16 @@ addProduct = function () {
         }]
     )
         .then(function (newProductData) {
-            console.log("\nAdding new product!");
-            console.log(newProductData)
+            console.log("\nAdding new product...");
+            itemName = newProductData.productName
             connection.query("INSERT INTO products SET ?",
                 {
                     product_name: newProductData.productName,
                     department_name: newProductData.departmentName,
                     price:newProductData.price ,
                     stock_quantity: newProductData.quantity
-                }, function (err, res) {
-                    console.log(res + " info added!\n");
+                }, function (err, results) {
+                    console.log(itemName + " added to product list!\n");
                     anythingElse()
                 });
         });
