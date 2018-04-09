@@ -19,14 +19,20 @@ var connection = mysql.createConnection({
 });
 
 connection.connect(function (err) {
-    if (err) throw err
+    if (err) console.log("UNABLE TO CONNECT")
+    //throw err
     //console.log("connection succesful");
     dataDisplay()
 });
 
 dataDisplay = function () {
     connection.query("SELECT item_id, product_name, price FROM products", function (err, items) {
-        if (err) throw err;
+        if (err){
+            console.log("OOPS... Something went wrong, please try again!")
+            anythingElse()
+
+        } 
+        //throw err;
 
         else {
             console.log("\n")
@@ -66,7 +72,8 @@ checkInventory = function () {
             itemName = productData[0].product_name
             totalSales = productData[0].product_sales
 
-            if (err) throw err;
+            if (err) {console.log("OOPS... Something went wrong, please try again!")
+            anythingElse();}
 
             else if (quantityPurchased <= inStock) {
                 inStock -= quantityPurchased
@@ -112,6 +119,7 @@ updateInventory = function () {
             }
         ],
         function (err, updatedStock) {
+            
             //console.log("Stock Updated!\n")
             calculateCost()
 
@@ -128,7 +136,7 @@ calculateCost = function () {
             itemPrice = priceData[0].price
             customerCost = itemPrice * quantityPurchased
             console.log("\n__________________________________________\nYou bought " + quantityPurchased + " " + itemName + "(s) " +
-                " at " + itemPrice + " a piece. \nYour total cost for this purchase is: $" + customerCost+"\n__________________________________________\n")
+                " at $" + itemPrice + " a piece. \nYour total cost for this purchase is: $" + customerCost+"\n__________________________________________\n")
             updateProductSales()
             anythingElse()
         })

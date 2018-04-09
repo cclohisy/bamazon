@@ -66,17 +66,17 @@ GROUP BY department_name
 --displays dept name and total product sales for each department and groups by department name... add alias?
 --NEED TO APPLY THIS TO JOIN.. after alias? 
 SELECT department_name, SUM(product_sales) AS total_sales FROM products 
-WHERE p.department_name = p.department_name 
+WHERE department_name = department_name 
 GROUP BY department_name;
 
 -- attempt at joining
 SELECT d.department_id, d.department_name, d.over_head_costs, p.product_sales,
-SUM( p.product_sales - d.over_head_costs) AS total_profit,
-SUM(product_sales) AS total_sales FROM bamazon.products p
+SUM( p.total_sales) - d.over_head_costs AS total_profit,
 RIGHT JOIN departments  d ON p.department_name  = d.department_name
 GROUP BY department_name 
 
---THINK this is working?... 
+--THINK this is working?...
+
 
 
 
