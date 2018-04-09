@@ -53,4 +53,30 @@ JOIN departments  d ON p.department_name  = d.department_name
 SELECT d.department_id, d.department_name, d.over_head_costs, p.product_sales
 FROM bamazon.products p
 JOIN departments  d ON p.department_name  = d.department_name
-GROUP BY department_id
+GROUP BY department_id\
+
+-- ADD RIGHT JOIN... WILL STILL SHOW GET PRODUCT SALES RIGHT PRODUCT SALES...
+SELECT d.department_id, d.department_name, d.over_head_costs, p.product_sales,
+SUM( p.product_sales - d.over_head_costs) AS total_profit
+FROM bamazon.products p
+RIGHT JOIN departments  d ON p.department_name  = d.department_name
+GROUP BY department_name 
+
+-- WORKING! :) 
+--displays dept name and total product sales for each department and groups by department name... add alias?
+--NEED TO APPLY THIS TO JOIN.. after alias? 
+SELECT department_name, SUM(product_sales) AS total_sales FROM products 
+WHERE p.department_name = p.department_name 
+GROUP BY department_name;
+
+-- attempt at joining
+SELECT d.department_id, d.department_name, d.over_head_costs, p.product_sales,
+SUM( p.product_sales - d.over_head_costs) AS total_profit,
+SUM(product_sales) AS total_sales FROM bamazon.products p
+RIGHT JOIN departments  d ON p.department_name  = d.department_name
+GROUP BY department_name 
+
+--THINK this is working?... 
+
+
+

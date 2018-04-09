@@ -68,22 +68,25 @@ anythingElse = function () {
 }
 
 getSalesData = function () {
-    connection.query("SELECT d.department_id, d.department_name, d.over_head_costs, p.product_sales FROM products p "+ 
-    "JOIN departments  d ON p.department_name  = d.department_name GROUP BY department_id",
+    connection.query("SELECT d.department_id, d.department_name, d.over_head_costs, p.product_sales," +
+    " SUM( p.product_sales - d.over_head_costs) AS total_profit,"+
+    " SUM(product_sales) AS total_sales FROM bamazon.products p"+
+    " RIGHT JOIN departments  d ON p.department_name  = d.department_name"+
+    " GROUP BY department_name ",
     
     function (err, products) {
         if (err) throw err;
 
         else {
-            for(i=0; i< products.length; i++){
-                //product sales = total product sales for products where dept ids are = 
-                    //if statement in loop? 
-                overheadCost = products[i].over_head_costs
-                console.log(products[i].department_name  + " overhead " + overheadCost)
-                totalSales = products[i].product_sales
-                console.log(products[i].department_name  + " total sales for product " +  totalSales)
+            // for(i=0; i< products.length; i++){
+            //     //product sales = total product sales for products where dept ids are = 
+            //         //if statement in loop? 
+            //     overheadCost = products[i].over_head_costs
+            //     console.log(products[i].department_name  + " overhead " + overheadCost)
+            //     totalSales = products[i].product_sales
+            //     console.log(products[i].department_name  + " total sales for product " +  totalSales)
 
-            }
+            // }
             console.log("\n")
             console.table(products)
             anythingElse()
