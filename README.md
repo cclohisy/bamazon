@@ -18,7 +18,7 @@ Run `node bamazonCustomer.js` and follow prompts to do the following:
 * Choose product to purchase by ID number.
 * If there is a sufficient amount of the product in stock, it will return the total for that purchase.
     * When the purchase goes through, it updates the stock quantity to reflect the purchase.
-    ![Purchase Succes](/custPurchase.png)
+    ![Purchase Succes](custPurchase.png)
 * If there is not enough of the product in stock, it will display error message.
 
 
