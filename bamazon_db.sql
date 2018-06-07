@@ -53,7 +53,7 @@ JOIN departments  d ON p.department_name  = d.department_name
 SELECT d.department_id, d.department_name, d.over_head_costs, p.product_sales
 FROM bamazon.products p
 JOIN departments  d ON p.department_name  = d.department_name
-GROUP BY department_id\
+GROUP BY department_id
 
 -- ADD RIGHT JOIN... WILL STILL SHOW GET PRODUCT SALES RIGHT PRODUCT SALES...
 SELECT d.department_id, d.department_name, d.over_head_costs, p.product_sales,
